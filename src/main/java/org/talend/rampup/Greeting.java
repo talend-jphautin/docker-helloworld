@@ -1,23 +1,29 @@
 package org.talend.rampup;
 
+import org.springframework.data.annotation.Id;
+
+import java.util.Date;
+
 /**
  * Created by jphautin on 25/01/17.
  */
 public class Greeting {
 
-    private final long id;
-    private final String content;
+    private final String name;
 
-    public Greeting(long id, String content) {
-        this.id = id;
-        this.content = content;
+    private final Date date;
+
+    public Greeting(String name) {
+        this.name = name;
+        this.date=new Date();
     }
 
-    public long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public String getContent() {
-        return content;
+    public Date getDate() {
+        return date;
     }
+
 }

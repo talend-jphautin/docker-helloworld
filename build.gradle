@@ -4,8 +4,8 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'spring-boot'
-//apply plugin: 'docker'
 apply plugin: 'com.bmuschko.docker-java-application'
+apply plugin: 'docker-compose'
 
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -31,6 +31,7 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE'
         //classpath 'se.transmode.gradle:gradle-docker:1.2'
         classpath 'com.bmuschko:gradle-docker-plugin:3.0.5'
+        classpath "com.avast.gradle:docker-compose-gradle-plugin:0.3.17"
     }
 }
 
@@ -39,6 +40,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE")
     compile("io.springfox:springfox-swagger2:2.5.0")
     compile("io.springfox:springfox-swagger-ui:2.5.0")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb:1.4.3.RELEASE")
 }
 
 docker {
@@ -48,6 +50,12 @@ docker {
         ports = [8080, 5701]
         tag = "localhost:5000/talend/$name:$version"
     }
+}
+
+composeUp.dependsOn dockerBuildImage
+
+dockerCompose {
+
 }
 
 task wrapper(type: Wrapper) {

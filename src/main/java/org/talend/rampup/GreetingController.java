@@ -1,10 +1,12 @@
 package org.talend.rampup;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -15,11 +17,20 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GreetingController {
 
     private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/greeting")
-    public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
-        return new Greeting(counter.incrementAndGet(),
-                String.format(template, name));
+    @Autowired
+    private GreetingRepository greetingRepository;
+
+    @RequestMapping(value="greeting/{name}", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Message greeting(@PathVariable("name") String name) {
+        Greeting greeting = new Greeting(name);
+        greetingRepository.insert(greeting);
+        return new Message(String.format(template, name));
+    }
+
+    @RequestMapping(value="greeting/{name}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Greeting> greetings(@PathVariable("name") String name) {
+        List<Greeting> greetings = greetingRepository.findByName(name);
+        return greetings;
     }
 }
